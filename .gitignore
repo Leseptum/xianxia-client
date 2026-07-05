@@ -1,0 +1,32 @@
+# Godot 4+
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+*.translation
+
+# Godot .NET / C#
+.mono/
+data_*/
+mono_crash.*.json
+.vs/
+bin/
+obj/
+
+# SpacetimeDB generierte Bindings (via Godot Plugin, nicht spacetime generate)
+spacetime_bindings/
+
+# Godot Editor Tempfiles
+*.tmp
+*.tscn[0-9]*.tmp
+
+# Sonstiges
+.DS_Store
+Thumbs.db
+.env
+*.pem
+
+# IDE
+.idea/
+.vscode/
+*.user

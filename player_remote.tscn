@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://beqxap0mecb18"]
+
+[ext_resource type="Script" uid="uid://c5xtwfmibyun0" path="res://player_remote.gd" id="1_kcfk1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sh265"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4flbx"]
+size = Vector2(32, 32)
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=629471029]
+script = ExtResource("1_kcfk1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1860029226]
+shape = SubResource("CapsuleShape2D_sh265")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1905791173]
+texture = SubResource("PlaceholderTexture2D_4flbx")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=639537410]

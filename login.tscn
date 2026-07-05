@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://deoipq8dmqcxr"]
+
+[ext_resource type="Script" uid="uid://7q571v0b5pml" path="res://login.gd" id="1_cau7c"]
+
+[node name="Control" type="Control" unique_id=619800881]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_cau7c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=476869035]
+layout_mode = 0
+offset_left = 384.0
+offset_top = 158.0
+offset_right = 594.0
+offset_bottom = 314.0
+pivot_offset = Vector2(0, 23)
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1502123934]
+layout_mode = 2
+text = "Xianxia - Anmeldung"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer" unique_id=901545228]
+layout_mode = 2
+accessibility_name = "name_input"
+placeholder_text = "name"
+
+[node name="LineEdit2" type="LineEdit" parent="VBoxContainer" unique_id=1486825889]
+layout_mode = 2
+accessibility_name = "pw_input"
+placeholder_text = "password"
+secret = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1198293046]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=2098523362]
+layout_mode = 2
+accessibility_name = "login_btn"
+text = "Anmelden"
+
+[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1614362094]
+layout_mode = 2
+accessibility_name = "register_btn"
+text = "Registrieren"
+
+[node name="Label2" type="Label" parent="VBoxContainer" unique_id=1315362632]
+layout_mode = 2
+accessibility_name = "status_label"

@@ -1,0 +1,38 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="xianxia_2d"
+run/main_scene="uid://deoipq8dmqcxr"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+
+[autoload]
+
+SpacetimeDB="*res://spacetime_bindings/schema/spacetime_autoload.gd"
+Global="*uid://b0ao7bx0hq1x"
+
+[dotnet]
+
+project/assembly_name="xianxia_2d"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/SpacetimeDB/plugin.cfg")
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bvv4jamicybnu"]
+
+[ext_resource type="Script" uid="uid://bej0pj41bdhv3" path="res://main.gd" id="1_fj7yv"]
+[ext_resource type="Texture2D" uid="uid://dixlqd0tr6o4y" path="res://xianxia_tiles.png" id="2_fj7yv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aqk2v"]
+texture = ExtResource("2_fj7yv")
+texture_region_size = Vector2i(64, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_tlwt5"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(64, 32)
+sources/1 = SubResource("TileSetAtlasSource_aqk2v")
+
+[node name="Node2D" type="Node2D" unique_id=558144188]
+script = ExtResource("1_fj7yv")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=800888638]
+tile_set = SubResource("TileSet_tlwt5")

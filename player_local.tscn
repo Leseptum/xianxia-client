@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://cvvectbtjjor2"]
+
+[sub_resource type="GDScript" id="GDScript_uxsf3"]
+script/source = "extends CharacterBody2D
+
+const SPEED = 150.0
+var position_timer: float = 0.0
+var my_id = null
+
+func _ready() -> void:
+	$Camera2D.zoom = Vector2(1.0, 1.0)
+
+func _physics_process(delta: float) -> void:
+	var input = Vector2.ZERO
+	if Input.is_action_pressed(\"ui_right\"): input += Vector2(1, 0.5)
+	if Input.is_action_pressed(\"ui_left\"):  input += Vector2(-1, -0.5)
+	if Input.is_action_pressed(\"ui_down\"):  input += Vector2(-1, 0.5)
+	if Input.is_action_pressed(\"ui_up\"):    input += Vector2(1, -0.5)
+	
+	velocity = input.normalized() * SPEED
+	move_and_slide()
+
+	position_timer += delta
+	if position_timer >= 0.1:
+		position_timer = 0
+		if my_id != null:
+			SpacetimeDB.Xianxia.reducers.update_position(
+				my_id, position.x, position.y
+			)
+"
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sh265"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4flbx"]
+size = Vector2(32, 32)
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=629471029]
+script = SubResource("GDScript_uxsf3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1860029226]
+shape = SubResource("CapsuleShape2D_sh265")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1905791173]
+texture = SubResource("PlaceholderTexture2D_4flbx")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=639537410]
