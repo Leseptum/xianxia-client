@@ -1,10 +1,17 @@
 extends Control
 
+const REQUEST_TIMEOUT_SEC := 8.0
+
 @onready var name_input   = $VBoxContainer/LineEdit
 @onready var pw_input     = $VBoxContainer/LineEdit2
 @onready var status_label = $VBoxContainer/Label2
 @onready var login_btn    = $VBoxContainer/HBoxContainer/Button
 @onready var register_btn = $VBoxContainer/HBoxContainer/Button2
+
+# true, solange auf die Antwort des Reducers (oder den Player-Insert) gewartet wird.
+# Verhindert, dass ein verspäteter Timeout eine bereits erfolgreiche/fehlgeschlagene
+# Anmeldung überschreibt, bzw. dass eine spätere Antwort einen zwischenzeitlichen Timeout überschreibt.
+var _request_pending := false
 
 func _ready() -> void:
 	login_btn.disabled  = true
@@ -38,25 +45,54 @@ func _try_enter(name: String, pw: String, registrieren: bool) -> void:
 		return
 	Global.my_name = name
 	var pw_hash = _hash(pw)
-	# Erst subscriben, dann Reducer — so kommt der Insert garantiert an
-	SpacetimeDB.Xianxia.subscribe(["SELECT * FROM player", "SELECT * FROM world_tile"])
+	# Erst subscriben, dann Reducer — so kommt der Insert garantiert an.
+	# Filter per :sender — es kommt nur die Zeile des anzumeldenden Spielers an,
+	# nicht die komplette Player-Tabelle.
+	SpacetimeDB.Xianxia.subscribe(["SELECT * FROM player WHERE identity = :sender", "SELECT * FROM world_tile"])
 	SpacetimeDB.Xianxia.db.player.on_insert(_on_player_insert)
-	if registrieren:
-		SpacetimeDB.Xianxia.reducers.register(name, pw_hash)
-		status_label.text = "Registrieren..."
-	else:
-		SpacetimeDB.Xianxia.reducers.login(name, pw_hash)
-		status_label.text = "Anmelden..."
+
 	login_btn.disabled = true
 	register_btn.disabled = true
+	_request_pending = true
+
+	var call: SpacetimeDBReducerCall
+	if registrieren:
+		call = SpacetimeDB.Xianxia.reducers.register(name, pw_hash)
+		status_label.text = "Registrieren..."
+	else:
+		call = SpacetimeDB.Xianxia.reducers.login(name, pw_hash)
+		status_label.text = "Anmelden..."
+
+	if call.error != OK:
+		_on_reducer_failed("Anfrage konnte nicht gesendet werden (%s)." % error_string(call.error))
+		return
+
+	call.on_error.connect(_on_reducer_failed)
+	call.on_internal_error.connect(_on_reducer_failed)
+
+	_watch_timeout()
+
+func _watch_timeout() -> void:
+	await get_tree().create_timer(REQUEST_TIMEOUT_SEC).timeout
+	if not _request_pending:
+		return
+	_request_pending = false
+	status_label.text = "Zeitüberschreitung: Server antwortet nicht."
+	login_btn.disabled = false
+	register_btn.disabled = false
+
+func _on_reducer_failed(err: String) -> void:
+	if not _request_pending:
+		return
+	_request_pending = false
+	status_label.text = "Fehler: " + err
+	login_btn.disabled = false
+	register_btn.disabled = false
 
 func _on_player_insert(player) -> void:
-	# Nur eigenen Spieler erkennen — per identity, nicht per name
-	var ident = ""
-	if player.get("identity") != null:
-		ident = player.identity if player.identity is String else player.identity.hex_encode()
-	if ident != Global.my_identity:
+	if not _request_pending:
 		return
+	_request_pending = false
 	Global.my_player_id = player.player_id
 	status_label.text = "Willkommen, " + player.get("name") + "!"
 	await get_tree().create_timer(0.8).timeout
